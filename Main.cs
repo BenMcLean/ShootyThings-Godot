@@ -64,7 +64,7 @@ public class Main : Spatial
 
 		AddChild(VirtualScreen = new VirtualScreen()
 		{
-			Transform = new Transform(Basis.Identity, new Vector3(0, VirtualScreen.Height / 2f, -VirtualScreen.Height / 2f)),
+			Transform = new Transform(Basis.Identity, new Vector3(0f, VirtualScreen.Height / 2f, -1f)),
 		});
 
 		AddChild(Line3D = new Line3D()
@@ -102,7 +102,10 @@ public class Main : Spatial
 						((CollisionShape)collider.ShapeOwnerGetOwner(collider.ShapeFindOwner((int)result["shape"]))).Name
 						);
 					GD.Print(result);
-					Cube.Transform = new Transform(Basis.Identity, (Vector3)result["position"]);
+					Vector3 position = (Vector3)result["position"];
+					Cube.Transform = new Transform(Basis.Identity, position);
+					Vector3 localPosition = VirtualScreen.ToLocal(position);
+					VirtualScreen.TargetPosition = new Vector2(localPosition.x, localPosition.y);
 				}
 				else
 					GD.Print("Hit nothing! :(");

@@ -49,7 +49,8 @@ public class VirtualScreen : StaticBody
                 FlagsTransparent = true,
                 ParamsCullMode = SpatialMaterial.CullMode.Disabled,
                 ParamsSpecularMode = SpatialMaterial.SpecularMode.Disabled,
-            }
+            },
+            Transform = new Transform(Basis.Identity, new Vector3(0f, 0f, PixelWidth / 2f)),
         };
 
         AddChild(CollisionShape = new CollisionShape()
@@ -60,18 +61,22 @@ public class VirtualScreen : StaticBody
                 Extents = new Vector3(
                     ((QuadMesh)MeshInstance.Mesh).Size.x / 2f,
                     ((QuadMesh)MeshInstance.Mesh).Size.y / 2f,
-                    PixelWidth
+                    PixelWidth / 2f
                     ),
-            }
+            },
+            Transform = new Transform(Basis.Identity, new Vector3(0f, 0f, -PixelWidth)),
         });
         CollisionShape.AddChild(MeshInstance);
 
         TargetPosition = new Vector2(Height / 2f, Height / 2f);
     }
 
+    public override void _PhysicsProcess(float delta) =>
+        GlobalTransform = new Transform(Basis.Identity.Rotated(Vector3.Up, GetViewport().GetCamera().GlobalTransform.basis.GetEuler().y), GlobalTransform.origin);
+
     public Vector2 TargetPosition
     {
-        set => Target.RectPosition = new Vector2(value.x / Height * Viewport.Size.x, value.y / Height * Viewport.Size.y);
+        set => Target.RectPosition = new Vector2(-value.x / Height * Viewport.Size.x + Viewport.Size.x / 2f - 1, -value.y / Height * Viewport.Size.y + Viewport.Size.y / 2f - 1);
         get => new Vector2(Target.RectPosition.x / Viewport.Size.x * Height, Target.RectPosition.y / Viewport.Size.y * Height);
     }
 }
