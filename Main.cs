@@ -35,11 +35,32 @@ public class Main : Spatial
 		{
 			ControllerId = 2,
 		});
+		LeftController.AddChild((Spatial)GD.Load<PackedScene>("res://OQ_Toolkit/OQ_ARVRController/models3d/OculusQuestTouchController_Left.gltf").Instance());
+		RightController.AddChild((Spatial)GD.Load<PackedScene>("res://OQ_Toolkit/OQ_ARVRController/models3d/OculusQuestTouchController_Right.gltf").Instance());
 
 		ARVRInterface = ARVRServer.FindInterface(OS.GetName().Equals("Android") ? "OVRMobile" : "OpenVR");
 
 		if (ARVRInterface != null && ARVRInterface.Initialize())
 			GetViewport().Arvr = true;
+
+		AddChild(new MeshInstance()
+		{
+			Mesh = new QuadMesh()
+			{
+				Size = new Vector2(5, 5),
+			},
+			Transform = new Transform(Basis.Identity, new Vector3(0, 2.5f, -2.5f)),
+			MaterialOverride = new SpatialMaterial()
+			{
+				AlbedoTexture = (Texture)GD.Load("res://icon.png"),
+				FlagsUnshaded = true,
+				FlagsDoNotReceiveShadows = true,
+				FlagsDisableAmbientLight = true,
+				FlagsTransparent = true,
+				ParamsCullMode = SpatialMaterial.CullMode.Disabled,
+				ParamsSpecularMode = SpatialMaterial.SpecularMode.Disabled,
+			}
+		});
 	}
 
 	public override void _PhysicsProcess(float delta)
