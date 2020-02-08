@@ -3,6 +3,7 @@ using System;
 
 public class Main : Spatial
 {
+	public const float ShotRange = 64;
 	public ARVRInterface ARVRInterface { get; set; }
 	public ARVROrigin ARVROrigin { get; set; }
 	public ARVRCamera ARVRCamera { get; set; }
@@ -55,8 +56,41 @@ public class Main : Spatial
 		});
 	}
 
+	public static Vector3 ARVRControllerDirection(Basis basis) => -basis.z.Rotated(basis.x.Normalized(), -Mathf.Pi * 3f / 16f).Normalized();
+	public Vector3 LeftControllerDirection => ARVRControllerDirection(LeftController.GlobalTransform.basis);
+	public Vector3 RightControllerDirection => ARVRControllerDirection(RightController.GlobalTransform.basis);
+
 	public override void _PhysicsProcess(float delta)
 	{
+		if (RightController.IsButtonPressed((int)Godot.JoystickList.VrTrigger) > 0)
+		{
+			if (!Shooting)
+			{
+				Line3D.Vertices = new Vector3[] {
+						RightController.GlobalTransform.origin,
+						RightController.GlobalTransform.origin + RightControllerDirection * ShotRange
+					};
+				Godot.Collections.Dictionary result = GetWorld().DirectSpaceState.IntersectRay(
+					Line3D.Vertices[0],
+					Line3D.Vertices[1]
+					);
 
+				GD.Print("Shooting! Range: " + ShotRange + " Time: " + DateTime.Now);
+				if (result.Count > 0)
+				{
+					CollisionObject collider = (CollisionObject)result["collider"];
+					GD.Print(
+						((CollisionShape)collider.ShapeOwnerGetOwner(collider.ShapeFindOwner((int)result["shape"]))).Name
+						);
+				}
+				else
+					GD.Print("Hit nothing! :(");
+				Shooting = true;
+			}
+		}
+		else
+			Shooting = false;
 	}
+
+	private bool Shooting = false;
 }

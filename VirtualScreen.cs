@@ -42,7 +42,6 @@ public class VirtualScreen : StaticBody
             MaterialOverride = new SpatialMaterial()
             {
                 AlbedoTexture = Viewport.GetTexture(),
-                //AlbedoTexture = (Texture)GD.Load("res://icon.png"),
                 FlagsUnshaded = true,
                 FlagsDoNotReceiveShadows = true,
                 FlagsDisableAmbientLight = true,
