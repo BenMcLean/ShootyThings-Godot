@@ -50,7 +50,7 @@ public class VirtualScreen : StaticBody
                 ParamsCullMode = SpatialMaterial.CullMode.Disabled,
                 ParamsSpecularMode = SpatialMaterial.SpecularMode.Disabled,
             },
-            Transform = new Transform(Basis.Identity, new Vector3(0f, 0f, PixelWidth / 2f)),
+            Transform = new Transform(new Basis(Vector3.Up, Mathf.Pi), new Vector3(0f, 0f, PixelWidth / 2f)),
         };
 
         AddChild(CollisionShape = new CollisionShape()
@@ -72,7 +72,7 @@ public class VirtualScreen : StaticBody
     }
 
     public override void _PhysicsProcess(float delta) =>
-        GlobalTransform = new Transform(Basis.Identity.Rotated(Vector3.Up, GetViewport().GetCamera().GlobalTransform.basis.GetEuler().y), GlobalTransform.origin);
+        GlobalTransform = new Transform(new Basis(Vector3.Up, GetViewport().GetCamera().GlobalTransform.basis.GetEuler().y), GlobalTransform.origin);
 
     public Vector2 TargetPosition
     {
