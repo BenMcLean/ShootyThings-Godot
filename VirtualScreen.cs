@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 public class VirtualScreen : StaticBody
 {
-    public const float Height = 2.7f;
+    public const float Height = (float)2.92608;
     public CollisionShape CollisionShape { get; set; }
     public MeshInstance MeshInstance { get; set; }
     private Viewport Viewport;
@@ -32,7 +32,6 @@ public class VirtualScreen : StaticBody
         {
             Color = Color.Color8(0, 0, 255, 255),
             RectSize = new Vector2(2, 2),
-            //RectPosition = new Vector2(Viewport.Size.x / 2f, Viewport.Size.y / 2f),
         });
         MeshInstance = new MeshInstance()
         {
@@ -60,7 +59,7 @@ public class VirtualScreen : StaticBody
                 Extents = new Vector3(
                     ((QuadMesh)MeshInstance.Mesh).Size.x / 2f,
                     ((QuadMesh)MeshInstance.Mesh).Size.y / 2f,
-                    0.1f
+                    0.0381f
                     ),
             }
         });
