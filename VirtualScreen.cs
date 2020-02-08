@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 public class VirtualScreen : StaticBody
 {
     public const float Height = (float)2.92608;
+    public const float PixelWidth = 0.0381f;
     public CollisionShape CollisionShape { get; set; }
     public MeshInstance MeshInstance { get; set; }
     private Viewport Viewport;
@@ -53,12 +54,13 @@ public class VirtualScreen : StaticBody
 
         AddChild(CollisionShape = new CollisionShape()
         {
+            Name = "The Virtual Screen!",
             Shape = new BoxShape()
             {
                 Extents = new Vector3(
                     ((QuadMesh)MeshInstance.Mesh).Size.x / 2f,
                     ((QuadMesh)MeshInstance.Mesh).Size.y / 2f,
-                    0.0381f
+                    PixelWidth
                     ),
             }
         });

@@ -3,6 +3,7 @@ using System;
 
 public class Main : Spatial
 {
+	public static readonly Color BackgroundColor = Color.Color8(0, 88, 88, 255);
 	public const float ShotRange = 64;
 	public ARVRInterface ARVRInterface { get; set; }
 	public ARVROrigin ARVROrigin { get; set; }
@@ -11,7 +12,23 @@ public class Main : Spatial
 	public ARVRController RightController { get; set; }
 	public VirtualScreen VirtualScreen { get; set; }
 	public Line3D Line3D { get; set; }
-	public static readonly Color BackgroundColor = Color.Color8(0, 88, 88, 255);
+	public MeshInstance Cube = new MeshInstance()
+	{
+		Mesh = new CubeMesh()
+		{
+			Size = new Vector3(VirtualScreen.PixelWidth, VirtualScreen.PixelWidth, VirtualScreen.PixelWidth),
+		},
+		MaterialOverride = new SpatialMaterial()
+		{
+			AlbedoColor = Color.Color8(255, 0, 255, 255), // Purple
+			FlagsUnshaded = true,
+			FlagsDoNotReceiveShadows = true,
+			FlagsDisableAmbientLight = true,
+			FlagsTransparent = false,
+			ParamsCullMode = SpatialMaterial.CullMode.Disabled,
+			ParamsSpecularMode = SpatialMaterial.SpecularMode.Disabled,
+		},
+	};
 
 	public override void _Ready()
 	{
@@ -54,6 +71,8 @@ public class Main : Spatial
 		{
 			Color = Color.Color8(255, 0, 0, 255),
 		});
+
+		AddChild(Cube);
 	}
 
 	public static Vector3 ARVRControllerDirection(Basis basis) => -basis.z.Rotated(basis.x.Normalized(), -Mathf.Pi * 3f / 16f).Normalized();
@@ -75,13 +94,15 @@ public class Main : Spatial
 					Line3D.Vertices[1]
 					);
 
-				GD.Print("Shooting! Range: " + ShotRange + " Time: " + DateTime.Now);
+				GD.Print("Shooting! Time: " + DateTime.Now);
 				if (result.Count > 0)
 				{
 					CollisionObject collider = (CollisionObject)result["collider"];
 					GD.Print(
 						((CollisionShape)collider.ShapeOwnerGetOwner(collider.ShapeFindOwner((int)result["shape"]))).Name
 						);
+					GD.Print(result);
+					Cube.Transform = new Transform(Basis.Identity, (Vector3)result["position"]);
 				}
 				else
 					GD.Print("Hit nothing! :(");
