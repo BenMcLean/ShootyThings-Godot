@@ -8,7 +8,8 @@ public class Main : Spatial
 	public ARVRCamera ARVRCamera { get; set; }
 	public ARVRController LeftController { get; set; }
 	public ARVRController RightController { get; set; }
-
+	public VirtualScreen VirtualScreen { get; set; }
+	public Line3D Line3D { get; set; }
 	public static readonly Color BackgroundColor = Color.Color8(0, 88, 88, 255);
 
 	public override void _Ready()
@@ -43,23 +44,14 @@ public class Main : Spatial
 		if (ARVRInterface != null && ARVRInterface.Initialize())
 			GetViewport().Arvr = true;
 
-		AddChild(new MeshInstance()
+		AddChild(VirtualScreen = new VirtualScreen()
 		{
-			Mesh = new QuadMesh()
-			{
-				Size = new Vector2(5, 5),
-			},
-			Transform = new Transform(Basis.Identity, new Vector3(0, 2.5f, -2.5f)),
-			MaterialOverride = new SpatialMaterial()
-			{
-				AlbedoTexture = (Texture)GD.Load("res://icon.png"),
-				FlagsUnshaded = true,
-				FlagsDoNotReceiveShadows = true,
-				FlagsDisableAmbientLight = true,
-				FlagsTransparent = true,
-				ParamsCullMode = SpatialMaterial.CullMode.Disabled,
-				ParamsSpecularMode = SpatialMaterial.SpecularMode.Disabled,
-			}
+			Transform = new Transform(Basis.Identity, new Vector3(0, VirtualScreen.Height / 2f, -VirtualScreen.Height / 2f)),
+		});
+
+		AddChild(Line3D = new Line3D()
+		{
+			Color = Color.Color8(255, 0, 0, 255),
 		});
 	}
 
